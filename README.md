@@ -2,12 +2,6 @@
 
 A Jellyfin plugin that makes thumbnails load instantly, even when the original images sit on a sleeping HDD.
 
-## Disclaimer
-
-I'm a gamedev, not a webdev. This plugin is entirely vibe-coded. Despite my best efforts to ensure that what happens is sound, the code may not follow best practices convention regarding Jellyfin plugins. Issues and PRs welcome. I use it on my homelab setup, it works reliably for me.
-
-Check out my other plugins: [JellyRate](https://github.com/trecoool/jellyrate) and [JellyRequest](https://github.com/trecoool/jellyrequest).
-
 ## The problem
 
 Jellyfin requests images at the exact pixel size of the card on screen. Cards scale with the window, so almost every window size asks for a new width (187, 240, 280 px…). Each new size misses the cache, so Jellyfin reads the original from disk and resizes it. On a NAS that means waking the HDD and waiting for every thumbnail.
@@ -31,6 +25,7 @@ Changing widths or quality changes the cache keys: run the task again to regener
 Notes:
 - Pre-generated images are WebP (what browsers ask for). Clients without WebP support get a JPG generated on first request.
 - Jellyfin's built-in **Clean Cache Directory** task deletes cache files older than 30 days. The nightly task regenerates them, but disabling the cleanup avoids that churn.
+- Check out my other plugins: [JellyRate](https://github.com/trecoool/jellyrate) and [JellyRequest](https://github.com/trecoool/jellyrequest).
 
 ## Requirements
 
