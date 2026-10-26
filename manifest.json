@@ -1,0 +1,11 @@
+[
+  {
+    "guid": "f4584150-00aa-4ca8-893a-1027e2802606",
+    "name": "JellyPrecache",
+    "description": "Snaps image requests to fixed sizes and pre-generates them, so thumbnails load instantly.",
+    "overview": "Rounds image requests up to a few fixed widths so every window size reuses the same cached image, pre-generates those sizes nightly, and keeps the resized cache clean (prune, rebuild).",
+    "owner": "trecoool",
+    "category": "General",
+    "versions": []
+  }
+]

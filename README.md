@@ -46,10 +46,29 @@ Notes:
 
 ## Installation
 
+### Via plugin repository (recommended)
+
+1. In Jellyfin, go to **Dashboard → Plugins → Repositories**.
+2. Click **+** and add:
+   - **Name**: `JellyPrecache`
+   - **URL**: `https://raw.githubusercontent.com/trecoool/jellyprecache/master/manifest.json`
+3. Open the **Catalog** tab, find **JellyPrecache**, and install it.
+4. Restart Jellyfin.
+
+### Manual install
+
+1. Download the latest `jellyprecache_<version>.zip` from the [Releases](https://github.com/trecoool/jellyprecache/releases) page.
+2. Extract `JellyPrecache.dll` to `<jellyfin-config>/plugins/JellyPrecache/`.
+3. Restart Jellyfin.
+
 ### Build from source
 
 ```bash
 dotnet build -c Release
 ```
 
-Copy `bin/Release/net9.0/JellyPrecache.dll` to `<jellyfin-config>/plugins/JellyPrecache/`, restart Jellyfin, then run **Pre-generate image sizes** once from **Dashboard → Scheduled Tasks**. The first run covers the whole library and can take a while.
+Copy `bin/Release/net9.0/JellyPrecache.dll` to `<jellyfin-config>/plugins/JellyPrecache/`, then restart Jellyfin.
+
+### First run
+
+Run **Pre-generate image sizes** once from **Dashboard → Scheduled Tasks** (or **Generate now** on the plugin page). The first run covers the whole library and can take a while.
