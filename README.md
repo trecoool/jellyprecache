@@ -20,10 +20,10 @@ Keeping all these unique sizes on cache is not reasonable either, as it just kee
 Changing widths or quality changes the cache keys: run the task again to regenerate.
 
 Notes:
-- Pre-generated images are WebP (what browsers ask for). Clients without WebP support get a JPG generated on first request.
-- On a 10,000 items library, total size for all cached images with the 2 defaults sizes (posters & backdrop) and one size for the rest, amounts to less than 2GB.
-- Jellyfin's built-in **Clean Cache Directory** task deletes cache files older than 30 days. The nightly task regenerates them, but disabling the cleanup avoids that churn.
-- Disabling the cleanup would leave all pre-generated and now useless images in cache forever, so the plugin comes with a full rebuild button : delete the whole cache, re-download any missing original that jellyfin may have lost, then cache everything.
+- Pre-generated images are WebP (what browsers ask for). Clients without WebP support get a JPG generated on first request. Since these clients have more predictable sizes, these formats are disabled by default.
+- On a ~10,000 items library, total size for all cached images with the default sizes (2 for posters & backdrop, 1 for the rest) amounts to less than 2GB.
+- Jellyfin's built-in **Clean Cache Directory** task deletes cache files older than 30 days. The plugin regenerates them, so disabling jellyfin's cleanup task or making it far less frequent is recommended.
+- Disabling the cleanup leaves all jellyfin's previously cached images in cache forever. The plugin comes with a "rebuild" button : delete the whole cache, re-download any missing original that Jellyfin may have lost to ensure all original exists, then cache everything.
 - Check out my other plugins: [JellyRate](https://github.com/trecoool/jellyrate) and [JellyRequest](https://github.com/trecoool/jellyrequest).
 
 ## Requirements
