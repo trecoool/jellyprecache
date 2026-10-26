@@ -10,5 +10,9 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
     public void RegisterServices(IServiceCollection services, IServerApplicationHost appHost)
     {
         services.AddSingleton<IStartupFilter, ImageSnapStartupFilter>();
+        services.AddSingleton<ResizedCache>();
+        services.AddSingleton<ImageGenerator>();
+        services.AddSingleton<StatusStore>();
+        services.AddHostedService<GenerateOnAddService>();
     }
 }

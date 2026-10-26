@@ -9,15 +9,28 @@ Keeping all these unique sizes on cache is not reasonable either, as it just kee
 
 - **Size snapping:** the client image requests are snapped to a set configurable widths : if the configured set is [300, 600], a 546px card will request a 600px rather than a 546px.
 - **Pre-generation:** a scheduled task generates every sizes for the whole library : image requests are now always cache hits. Butter smooth navigation, even with images in their media folder.
+- **Cache maintenance:** **Prune** deletes cached images nothing uses anymore; **Rebuild** starts the cache over.
 
 ## Configuration
 
 **Dashboard → Plugins → JellyPrecache**:
 
 - Widths per image type (Primary, Backdrop, Thumb, Logo, Banner, Disc). Each type can be disabled.
+- Formats per image type: **WebP** (browsers and most apps, on by default) and **Fallback** (JPG, or PNG for images with transparency, for apps without WebP such as some TV apps). Formats left off are still served, just generated on first request.
 - Quality (default 85). Keep it below 90: at 90 and above, Jellyfin serves originals smaller than the target straight from disk, bypassing the cache.
+- **Generate cached images immediately when media is added** (off by default): also applies when an item gets new images.
 
-Changing widths or quality changes the cache keys: run the task again to regenerate.
+Changing widths or quality changes the cache keys: run the task again to regenerate, then **Prune** to remove the old sizes.
+
+### Cache section
+
+The bottom of the config page shows the cache size per format and the last result of each task, with live progress while one runs.
+
+- **Generate now** runs **Pre-generate image sizes**.
+- **Prune** computes the name of every file Jellyfin can create for a configured width of a current library image (WebP and fallback, whether or not Fallback is ticked), then deletes every other file in the resized cache: old sizes, removed items, images replaced since, sizes from before snapping. It first asks Jellyfin for a random sample and checks the names match; on any difference, or if over half the cache would go, it stops without deleting anything. Images the plugin doesn't handle (chapter thumbnails, blurred images, other image types) are deleted too and recreated by Jellyfin on next view. Prune takes seconds and doesn't generate missing sizes.
+- **Rebuild** (asks for confirmation) deletes every resized image, re-downloads originals whose file is missing from the metadata providers, then regenerates everything. Thumbnails load slowly until it finishes.
+
+The three tasks also appear under **Dashboard → Scheduled Tasks** and never run at the same time. Only Pre-generate has a default schedule.
 
 Notes:
 - Pre-generated images are WebP (what browsers ask for). Clients without WebP support get a JPG generated on first request. Since these clients have more predictable sizes, these formats are disabled by default.

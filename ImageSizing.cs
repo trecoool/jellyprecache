@@ -24,6 +24,11 @@ public static class ImageSizing
         [ImageType.Disc] = new[] { 600 },
     };
 
+    private static readonly ImageFormat[] WebpClient = { ImageFormat.Webp };
+
+    // Client without WebP: JPG, or PNG when the original may be transparent (png/webp/gif/svg)
+    private static readonly ImageFormat[] NoWebpClient = { ImageFormat.Jpg, ImageFormat.Png };
+
     public static IEnumerable<ImageType> SupportedTypes => Defaults.Keys;
 
     public static int[] DefaultWidths(ImageType type) => Defaults.GetValueOrDefault(type, Array.Empty<int>());
@@ -54,6 +59,35 @@ public static class ImageSizing
             .ToArray();
 
         return parsed.Length > 0 ? parsed : DefaultWidths(type);
+    }
+
+    // Enabled types with their widths and the format sets to pre-generate; types with no format ticked are left out.
+    // allFormats: both sets whatever is ticked (Prune keeps files any client can ask for).
+    public static TypePlan[] Plan(PluginConfiguration config, bool allFormats = false)
+    {
+        return SupportedTypes
+            .Select(t => (Type: t, Widths: WidthsFor(config, t), Setting: config.ImageTypes.FirstOrDefault(s => s.Type == t)))
+            .Where(t => t.Widths is not null)
+            .Select(t => new TypePlan(t.Type, t.Widths!, allFormats ? new[] { WebpClient, NoWebpClient } : FormatSets(t.Setting)))
+            .Where(p => p.FormatSets.Length > 0)
+            .ToArray();
+    }
+
+    // Each set is what ImageController passes for that kind of client; Jellyfin picks the format from it
+    private static ImageFormat[][] FormatSets(ImageTypeSetting? setting)
+    {
+        var sets = new List<ImageFormat[]>(2);
+        if (setting?.WebP ?? true)
+        {
+            sets.Add(WebpClient);
+        }
+
+        if (setting?.Fallback ?? false)
+        {
+            sets.Add(NoWebpClient);
+        }
+
+        return sets.ToArray();
     }
 
     // Smallest configured width >= requested, else the largest
@@ -91,3 +125,5 @@ public static class ImageSizing
         };
     }
 }
+
+public sealed record TypePlan(ImageType Type, int[] Widths, ImageFormat[][] FormatSets);
