@@ -2,12 +2,13 @@
 
 A Jellyfin plugin that makes thumbnails load instantly, even when the original images sit on a sleeping HDD.
 Ever wondered why your thumbnails load slow even though you've set all of it to live on your cache?
-Jellyfin requests images at the exact pixel size of the card on screen. Cards scale with the window, so almost every window size asks for a new width (187, 240, 280 px…). Each new size having a high chance to be unique, it misses the cache, so Jellyfin reads the original from disk and resizes it. When scrolling through a large libraries that's a lot of image resizes, which is slow and eats up cpu cycles. If you like to save the original on hdd for easy access, it's even worse. Keeping all this multitude of sizes on cache is not reasonable either, hence why jellyfin clears it every 30 days by default.
+Jellyfin requests images at the exact pixel size of the card on screen. Cards scale with the window, so almost every window size asks for a new width (187, 240, 280 px…). Each new size having a high chance to be unique, it misses the cache, so Jellyfin reads the original from disk and resizes it. When scrolling through a large libraries that's a lot of image resizes, which is slow and eats up cpu cycles. If you like to save the original on hdd for easy access, it's even worse.
+Keeping all these unique sizes on cache is not reasonable either, as it just keeps growing. This is why by default jellyfin clears any cached item older than 30 days.
 
 ## What it does
 
-- **Size snapping:** all image requests are rounded up to a few fixed configurable widths, so that any request is now served at a predetermined size. Requests without a size pass through untouched.
-- **Pre-generation:** scheduled task that generates every predetermined sizes for the whole library ahead of time, for butter smooth navigation, even with originals on hdd.
+- **Size snapping:** the client image requests are snapped to a set configurable widths : if the configured set is [300, 600], a 546px card will request a 600px rather than a 546px.
+- **Pre-generation:** a scheduled task generates every sizes for the whole library : image requests are now always cache hits. Butter smooth navigation, even with images in their media folder.
 
 ## Configuration
 
